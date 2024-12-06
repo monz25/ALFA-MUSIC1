@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="id"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Acara</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: maroon;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            display: none;
+        }
+        .login {
+            text-align: center;
+            margin-top: 100px;
+        }
+        .login input {
+            margin: 5px;
+            padding: 10px;
+            width: 200px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid maroon;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .calendar {
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: maroon;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Selamat Datang di Manajemen Acara</h1>
+        <img id="logo" src="logo-placeholder.png" alt="Logo" style="width: 100px;">
+    </header>
+    <div class="login" id="login">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Masuk</button>
+        <p id="login-error" style="color: red;"></p>
+    </div>
+    <div class="container" id="app">
+        <h2>Kalender Acara</h2>
+        <div class="calendar" id="calendar"></div>
+        <h3>Tambahkan Acara</h3>
+        <input type="date" id="event-date">
+        <input type="text" id="event-title" placeholder="Nama Acara">
+        <input type="text" id="event-location" placeholder="Lokasi">
+        <button class="btn" onclick="addEvent()">Tambah Acara</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Acara</th>
+                    <th>Lokasi</th>
+                </tr>
+            </thead>
+            <tbody id="event-table">
+                <!-- Event rows will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const correctUsername = "alfamusic01";
+        const correctPassword = "99";
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === correctUsername && password === correctPassword) {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                loadCalendar();
+            } else {
+                document.getElementById('login-error').innerText = "Username atau password salah!";
+            }
+        }
+
+        function loadCalendar() {
+            const calendarContainer = document.getElementById('calendar');
+            const today = new Date();
+            const month = today.getMonth();
+            const year = today.getFullYear();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            let calendarHTML = '<table><tr>';
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                calendarHTML += `<td>${day}</td>`;
+                if (day % 7 === 0) calendarHTML += '</tr><tr>';
+            }
+            calendarHTML += '</tr></table>';
+            calendarContainer.innerHTML = calendarHTML;
+        }
+
+        function addEvent() {
+            const date = document.getElementById('event-date').value;
+            const title = document.getElementById('event-title').value;
+            const location = document.getElementById('event-location').value;
+            if (date && title && location) {
+                const table = document.getElementById('event-table');
+                const newRow = table.insertRow();
+                newRow.innerHTML = `<td>${date}</td><td>${title}</td><td>${location}</td>`;
+                addNextDayEvent(date, title, location); // Add next day event
+                document.getElementById('event-date').value = '';
+                document.getElementById('event-title').value = '';
+                document.getElementById('event-location').value = '';
+            }
+        }
+
+        function addNextDayEvent(date, title, location) {
+            const nextDate = new Date(date);
+            nextDate.setDate(nextDate.getDate() + 1);
+            const formattedDate = nextDate.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+            const table = document.getElementById('event-table');
+            const newRow = table.insertRow();
+            newRow.innerHTML = `<td>${formattedDate}</td><td>${title}</td><td>${location}</td>`;
+        }
+    </script>
+
+
+</body></html>
